@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascent - Daily Reflection</title>
+    <link rel="stylesheet" href="../css/checkin.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Daily Reflection</h1>
+        <p class="subtitle">Document the journey, not just the outcome.</p>
+
+        <!-- Topic Comfort Level -->
+        <div class="section">
+            <h2>How did today's learning feel?</h2>
+            <div class="moods" id="mood-selector">
+                <div class="mood" data-value="Frustrating" title="Frustrating">😞</div>
+                <div class="mood" data-value="Difficult" title="Difficult">😓</div>
+                <div class="mood" data-value="Neutral" title="Neutral">😐</div>
+                <div class="mood" data-value="Comfortable" title="Comfortable">🙂</div>
+                <div class="mood" data-value="Strong" title="Strong">😊</div>
+            </div>
+        </div>
+
+        <!-- Learning Obstacles -->
+        <div class="section">
+            <h2>What slowed you down the most?</h2>
+            <div class="options" id="obstacle-selector">
+                <button type="button" data-value="Concepts">Concepts</button>
+                <button type="button" data-value="Debugging">Debugging</button>
+                <button type="button" data-value="Time Management">Time Management</button>
+                <button type="button" data-value="Focus">Focus</button>
+                <button type="button" data-value="Implementation">Implementation</button>
+            </div>
+        </div>
+
+        <!-- Comparison Awareness (Unique PRD Feature) -->
+        <div class="section">
+            <h2>Did you catch yourself comparing your progress to others today?</h2>
+            <div class="options" id="comparison-selector">
+                <button type="button" data-value="No">No, stayed focused</button>
+                <button type="button" data-value="LinkedIn">Yes, on LinkedIn</button>
+                <button type="button" data-value="LeetCode">Yes, on LeetCode</button>
+                <button type="button" data-value="Friends">Yes, with friends</button>
+            </div>
+        </div>
+
+        <!-- Breakthrough Logging -->
+        <div class="section">
+            <h2>Any breakthroughs or struggles to log? (Optional)</h2>
+            <textarea id="journal-entry" placeholder="Example: Finally understood why we use a visited array in DFS..."></textarea>
+        </div>
+
+        <div class="actions">
+            <button class="save-btn" id="save-checkin-btn">Save Reflection</button>
+            <button class="back-btn" id="back-btn" onclick="window.location.href='home.html'">Cancel</button>
+        </div>
+    </div>
+
+    <script src="../js/checkin.js"></script>
+</body>
+</html>

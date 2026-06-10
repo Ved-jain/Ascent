@@ -1,0 +1,91 @@
+/* ================= GLOBAL SETTINGS ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter', sans-serif;
+    background:#fafafa;
+    color:#222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ================= ONBOARDING CARD ================= */
+.onboarding-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.onboarding-card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.onboarding-card h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* ================= FORM ELEMENTS ================= */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    transition: border-color 0.2s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.continue-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin-top: 10px;
+}
+
+.continue-btn:hover {
+    background: #1d4ed8;
+}

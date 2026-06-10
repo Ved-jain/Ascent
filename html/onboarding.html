@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascent - Welcome</title>
+    <link rel="stylesheet" href="../css/onboarding.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-card">
+            <h2>Welcome to Ascent</h2>
+            <p class="subtitle">Let's connect your learning platforms to generate your initial journey.</p>
+            
+            <form id="onboarding-form">
+                <div class="input-group">
+                    <label for="leetcode-handle">LeetCode Username</label>
+                    <input type="text" id="leetcode-handle" placeholder="e.g., neetcode" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="codeforces-handle">Codeforces Handle (Optional)</label>
+                    <input type="text" id="codeforces-handle" placeholder="e.g., tourist">
+                </div>
+
+                <button type="submit" class="continue-btn">Generate My Dashboard</button>
+            </form>
+        </div>
+    </div>
+    <script src="../js/onboarding.js"></script>
+</body>
+</html>

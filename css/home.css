@@ -1,0 +1,388 @@
+/* ================= GLOBAL SETTINGS ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    display:flex;
+    background:#fafafa;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:white;
+    border-right:1px solid #e5e5e5;
+    padding:30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.sidebar h2{
+    margin-bottom:40px;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar li{
+    margin-bottom:20px;
+    cursor:pointer;
+    color:#64748b;
+    font-weight:500;
+    transition:color 0.2s ease;
+}
+
+.sidebar li:hover, .sidebar li.active{
+    color:#0f172a;
+}
+
+.checkin-btn{
+    width:100%;
+    margin-top:40px;
+    padding:12px;
+    border:1px solid #e2e8f0;
+    background:#f8fafc;
+    color:#0f172a;
+    border-radius:8px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:all 0.2s ease;
+}
+
+.checkin-btn:hover{
+    background:#2563eb;
+    color:white;
+    border-color:#2563eb;
+}
+
+/* ================= MAIN CONTENT AREA ================= */
+.main-content{
+    flex:1;
+    padding:50px;
+}
+
+.welcome{
+    margin-bottom:40px;
+}
+
+.welcome p{
+    color:#666;
+    margin-top:10px;
+}
+
+/* ================= FOCUS CARDS ================= */
+.focus-card{
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    border:1px solid #e5e5e5;
+    margin-bottom:40px;
+}
+
+.focus-card h2{
+    margin-bottom:15px;
+}
+
+.focus-card h3{
+    margin-bottom:15px;
+}
+
+/* ================= FEED CARDS ================= */
+.feed{
+    margin-top:70px;
+}
+
+.feed-card{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    border:1px solid #e5e5e5;
+    margin-top:20px;
+}
+
+.feed-card h3{
+    margin-bottom:10px;
+}
+
+/* ================= SPOTLIGHT SECTION ================= */
+.spotlight-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.topic-name{
+    display:inline-block;
+    background:#eff6ff;
+    color:#2563eb;
+    padding:8px 14px;
+    border-radius:999px;
+    font-weight:600;
+    margin-bottom:25px;
+}
+
+.spotlight-header {
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.journey-duration {
+    font-size:13px;
+    color:#6b7280;
+    background:#f3f4f6;
+    padding:4px 12px;
+    border-radius:20px;
+    font-weight:500;
+}
+
+.journey-details {
+    display:flex;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.detail-box {
+    flex:1;
+    padding:20px;
+    border-radius:16px;
+    border:1px solid #f1f5f9;
+    background:#f8fafc;
+    transition: transform 0.2s ease;
+}
+
+.detail-box:hover {
+    transform: translateY(-2px);
+}
+
+.detail-label {
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:#666;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+.detail-box strong {
+    font-size:15px;
+    color:#111;
+}
+
+.detail-box.struggle strong {
+    color:#dc2626;
+}
+
+.detail-box.breakthrough strong {
+    color:#16a34a;
+}
+
+.journey-timeline {
+    margin-bottom:20px;
+}
+
+.timeline-label {
+    display:block;
+    font-size:13px;
+    color:#666;
+    margin-bottom:12px;
+    font-weight:500;
+}
+
+.journey-line{
+    display:flex;
+    align-items: center;
+    gap:15px;
+    background: #f8fafc;
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+
+.journey-step {
+    font-size: 28px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.journey-step:hover {
+    transform: scale(1.15);
+}
+
+.journey-step::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.journey-step:hover::after {
+    opacity: 1;
+}
+
+.journey-arrow {
+    color: #cbd5e1;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.journey-text{
+    color:#555;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+.spotlight-buttons{
+    display:flex;
+    margin-top:15px;
+    gap:10px;
+}
+
+.spotlight-buttons button{
+
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    background:#f1f5f9;
+    color: #334155;
+    font-weight: 600;
+    cursor:pointer;
+    transition: all 0.2s ease;
+}
+
+.spotlight-buttons button:hover {
+    background:#e2e8f0;
+    color: #0f172a;
+}
+
+.spotlight-card{
+    background:white;
+    border:1px solid #e2e8f0;
+    border-radius:24px;
+    padding:35px;
+    margin-top:20px;
+    max-width:900px;
+    box-shadow:0 20px 40px -10px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.spotlight-card:hover {
+    box-shadow:0 25px 50px -12px rgba(0,0,0,0.12);
+}
+
+.feed h2{
+    margin-bottom:20px;
+}
+
+.focus-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.focus-left{
+    width:55%;
+}
+
+.focus-right{
+    width:30%;
+}
+
+.stat-item{
+    display:flex;
+    justify-content:space-between;
+    margin-top:15px;
+    padding-bottom:10px;
+    border-bottom:1px solid #f0f0f0;
+}
+
+/* ================= HEATMAP ================= */
+.heatmap{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+}
+
+.cell{
+    width:18px;
+    height:18px;
+    border-radius:4px;
+    background:#e5e7eb;
+    position: relative;
+    cursor: pointer;
+}
+
+.cell::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.cell:hover::after {
+    opacity: 1;
+}
+
+.heatmap-legend{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    font-size:13px;
+    color:#666;
+}
+
+.heatmap-legend span{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.good-day{
+    background:#22c55e;
+}
+
+.difficult-day{
+    background:#fbbf24;
+}
+
+.frustrating-day{
+    background:#ef4444;
+}
+
+.no-activity{
+    background:#e5e7eb;
+}
