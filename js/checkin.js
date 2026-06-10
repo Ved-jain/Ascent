@@ -93,6 +93,32 @@ saveBtn.addEventListener('click', () => {
     checkins.push(newEntry);
     localStorage.setItem("ascent_checkins", JSON.stringify(checkins));
 
+    // Clear focus context since reflection is now saved
+    localStorage.removeItem("ascent_focus_context");
+
     alert("Reflection saved successfully!");
     window.location.href = "home.html";
 });
+
+// Check for pre-filled context on load
+function initCheckinContext() {
+    const contextStr = localStorage.getItem("ascent_focus_context");
+    if (contextStr) {
+        try {
+            const context = JSON.parse(contextStr);
+            if (journalEntry) {
+                journalEntry.value = `Struggling with ${context.problem} (${context.topic}) because: `;
+                journalEntry.focus();
+            }
+            // Pre-select "Concepts" as default obstacle
+            const conceptBtn = document.querySelector('#obstacle-selector button[data-value="Concepts"]');
+            if (conceptBtn) {
+                // Simulate click to trigger state update
+                conceptBtn.click();
+            }
+        } catch (e) {
+            console.error("Error parsing checkin context:", e);
+        }
+    }
+}
+initCheckinContext();

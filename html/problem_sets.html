@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ascent - Problem Sets</title>
+    <link rel="stylesheet" href="../css/problem_sets.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Ascent</h2>
+        <ul>
+            <li onclick="window.location.href='home.html'">Home</li>
+            <li onclick="window.location.href='journeys.html'">Journeys</li>
+            <li class="active" onclick="window.location.href='problem_sets.html'">Problem Sets</li>
+            <li onclick="window.location.href='compare.html'">Compare</li>
+            <li onclick="window.location.href='profile.html'">Profile</li>
+        </ul>
+        <button class="checkin-btn" onclick="window.location.href='checkin.html'">Log Reflection</button>
+    </div>
+
+    <div class="main-content">
+        <section class="problems-header">
+            <h1>Curated Problem Sets</h1>
+            <p class="subtitle">Log your struggles in real-time. If you get stuck, marking a problem as "Struggling" will help you write a daily reflection.</p>
+        </section>
+
+        <!-- Problems Container -->
+        <section class="problems-container">
+            
+            <!-- Category 1: Arrays & Two Pointers -->
+            <div class="category-block">
+                <h2 class="category-title">Arrays & Two Pointers</h2>
+                
+                <div class="problem-row" id="prob-1" data-id="1">
+                    <div class="prob-info">
+                        <span class="prob-name">1. Two Sum</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge easy">Easy</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="1" data-topic="Arrays" data-name="Two Sum">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="1" data-topic="Arrays" data-name="Two Sum">Struggling</button>
+                    </div>
+                </div>
+
+                <div class="problem-row" id="prob-2" data-id="2">
+                    <div class="prob-info">
+                        <span class="prob-name">2. Valid Palindrome</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge easy">Easy</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="2" data-topic="Arrays" data-name="Valid Palindrome">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="2" data-topic="Arrays" data-name="Valid Palindrome">Struggling</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 2: Binary Search -->
+            <div class="category-block">
+                <h2 class="category-title">Binary Search</h2>
+                
+                <div class="problem-row" id="prob-3" data-id="3">
+                    <div class="prob-info">
+                        <span class="prob-name">3. Binary Search</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge easy">Easy</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="3" data-topic="Binary Search" data-name="Binary Search">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="3" data-topic="Binary Search" data-name="Binary Search">Struggling</button>
+                    </div>
+                </div>
+
+                <div class="problem-row" id="prob-4" data-id="4">
+                    <div class="prob-info">
+                        <span class="prob-name">4. Search in Rotated Sorted Array</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge medium">Medium</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="4" data-topic="Binary Search" data-name="Search in Rotated Sorted Array">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="4" data-topic="Binary Search" data-name="Search in Rotated Sorted Array">Struggling</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 3: Trees & Graphs -->
+            <div class="category-block">
+                <h2 class="category-title">Trees & Graphs</h2>
+                
+                <div class="problem-row" id="prob-5" data-id="5">
+                    <div class="prob-info">
+                        <span class="prob-name">5. Maximum Depth of Binary Tree</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge easy">Easy</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="5" data-topic="Trees" data-name="Maximum Depth of Binary Tree">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="5" data-topic="Trees" data-name="Maximum Depth of Binary Tree">Struggling</button>
+                    </div>
+                </div>
+
+                <div class="problem-row" id="prob-6" data-id="6">
+                    <div class="prob-info">
+                        <span class="prob-name">6. Graph Traversals (DFS & BFS)</span>
+                        <span class="platform-badge cf">Codeforces</span>
+                    </div>
+                    <span class="diff-badge medium">Medium</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="6" data-topic="Graphs" data-name="Graph Traversals (DFS & BFS)">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="6" data-topic="Graphs" data-name="Graph Traversals (DFS & BFS)">Struggling</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category 4: Dynamic Programming -->
+            <div class="category-block">
+                <h2 class="category-title">Dynamic Programming</h2>
+                
+                <div class="problem-row" id="prob-7" data-id="7">
+                    <div class="prob-info">
+                        <span class="prob-name">7. Climbing Stairs</span>
+                        <span class="platform-badge lc">LeetCode</span>
+                    </div>
+                    <span class="diff-badge easy">Easy</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="7" data-topic="Dynamic Programming" data-name="Climbing Stairs">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="7" data-topic="Dynamic Programming" data-name="Climbing Stairs">Struggling</button>
+                    </div>
+                </div>
+
+                <div class="problem-row" id="prob-8" data-id="8">
+                    <div class="prob-info">
+                        <span class="prob-name">8. Grid Paths Combinations</span>
+                        <span class="platform-badge cf">Codeforces</span>
+                    </div>
+                    <span class="diff-badge medium">Medium</span>
+                    <div class="prob-actions">
+                        <button class="action-btn solved" data-id="8" data-topic="Dynamic Programming" data-name="Grid Paths Combinations">Mark Solved</button>
+                        <button class="action-btn struggling" data-id="8" data-topic="Dynamic Programming" data-name="Grid Paths Combinations">Struggling</button>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script src="../js/problem_sets.js"></script>
+</body>
+</html>
