@@ -89,13 +89,26 @@ const moodEmojis = {
 // We support viewing relative timeline days up to their current day (or at least 14 days)
 const totalTimelineDays = Math.max(userProfile.currentDay, 14);
 
+// Load actual solved problems status count from localStorage
+let compareSolvedCount = 0;
+try {
+    const statusStr = localStorage.getItem("ascent_problems_status");
+    if (statusStr) {
+        const statusDict = JSON.parse(statusStr);
+        compareSolvedCount = Object.values(statusDict).filter(status => status === "solved").length;
+    }
+} catch (e) {
+    console.error("Error reading problems status:", e);
+}
+
 for (let day = 1; day <= totalTimelineDays; day++) {
     // Check if user has a real checkin for this relativeDay
     const realCheckin = checkins.find(c => c.relativeDay === day);
+    const daySolves = 50 + (day * 3) + compareSolvedCount;
     
     if (realCheckin) {
         userTimeline[day] = {
-            solves: 50 + (day * 3), // Emulated solve progression
+            solves: daySolves,
             moodEmoji: moodEmojis[realCheckin.mood] || "😐",
             moodText: realCheckin.mood,
             topic: "Dynamic Programming", // Default focus
@@ -106,13 +119,14 @@ for (let day = 1; day <= totalTimelineDays; day++) {
         };
     } else {
         // Fall back to mock timeline
-        userTimeline[day] = profiles.VedFallbackTimeline[day] || {
-            solves: 50 + (day * 3),
-            moodEmoji: "😐",
-            moodText: "Neutral",
-            topic: "Dynamic Programming",
-            struggle: "Still learning the basics of state transitions.",
-            breakthrough: "Steady incremental practice."
+        const fallback = profiles.VedFallbackTimeline[day];
+        userTimeline[day] = {
+            solves: daySolves,
+            moodEmoji: fallback ? fallback.moodEmoji : "😐",
+            moodText: fallback ? fallback.moodText : "Neutral",
+            topic: fallback ? fallback.topic : "Dynamic Programming",
+            struggle: fallback ? fallback.struggle : "Still learning the basics of state transitions.",
+            breakthrough: fallback ? fallback.breakthrough : "Steady incremental practice."
         };
     }
 }

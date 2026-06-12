@@ -130,8 +130,20 @@ function renderDashboard() {
     const totalActive = checkins.length;
     const activeStreak = calculateStreak(checkins);
     
-    // Compute simulated solved count (e.g. baseline of 50 solves, plus 3 solved per logged reflection)
-    const baseSolves = 50 + (totalActive * 3);
+    // Load actual solved problems status count from localStorage
+    let solvedCount = 0;
+    try {
+        const statusStr = localStorage.getItem("ascent_problems_status");
+        if (statusStr) {
+            const statusDict = JSON.parse(statusStr);
+            solvedCount = Object.values(statusDict).filter(status => status === "solved").length;
+        }
+    } catch (e) {
+        console.error("Error reading problems status:", e);
+    }
+
+    // Compute solved count (e.g. baseline of 50 solves, plus 3 solves per reflection, plus actual solved count)
+    const baseSolves = 50 + (totalActive * 3) + solvedCount;
 
     if (elements.activeDays) elements.activeDays.textContent = totalActive;
     if (elements.currentStreak) elements.currentStreak.textContent = activeStreak;
