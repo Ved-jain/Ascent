@@ -1,0 +1,93 @@
+.upsolve-header {
+  margin-bottom: 24px;
+}
+
+.upsolve-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.upsolve-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.upsolve-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+
+.upsolve-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.prob-id {
+  font-weight: 700;
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.prob-rating {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.prob-rating.unrated {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.prob-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.prob-meta {
+  margin-bottom: 16px;
+}
+
+.fail-badge {
+  display: inline-block;
+  background-color: rgba(244, 63, 94, 0.1);
+  color: #f43f5e;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.prob-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.tag-pill {
+  background-color: var(--surface-2);
+  color: var(--text-2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+.solve-btn {
+  margin-top: auto;
+  text-align: center;
+  width: 100%;
+}

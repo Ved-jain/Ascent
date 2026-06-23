@@ -150,9 +150,102 @@ function renderProfile() {
     }
 }
 
+/* ================= EMOTIONAL PROGRESS CHART (SVG) ================= */
+function renderMoodChart() {
+    const container = document.getElementById("mood-chart-container");
+    if (!container) return;
+
+    const checkins = JSON.parse(localStorage.getItem("ascent_checkins")) || [];
+    
+    if (checkins.length === 0) {
+        container.innerHTML = `<div class="chart-placeholder">No mood data logged yet. Log daily reflections to generate your emotional trend chart!</div>`;
+        return;
+    }
+
+    // Sort checkins chronologically by date
+    const sortedCheckins = [...checkins].sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Take the last 10 entries to prevent chart clutter
+    const displayCheckins = sortedCheckins.slice(-10);
+
+    const moodValueMap = {
+        "Frustrating": 1,
+        "Difficult": 2,
+        "Neutral": 3,
+        "Comfortable": 4,
+        "Strong": 5
+    };
+
+    // Calculate Y level settings: grid lines at levels 1, 2, 3, 4, 5
+    const yLevels = [20, 55, 90, 125, 160];
+    let gridLinesHTML = yLevels.map(y => 
+        `<line x1="25" y1="${y}" x2="475" y2="${y}" class="chart-grid-line" />`
+    ).join("");
+
+    // Compile point coordinates
+    const coords = displayCheckins.map((c, index) => {
+        const val = moodValueMap[c.mood] || 3;
+        const x = displayCheckins.length > 1
+            ? 35 + (index / (displayCheckins.length - 1)) * 430
+            : 250;
+        const y = 20 + 140 - ((val - 1) / 4) * 140;
+        return { x, y, day: c.relativeDay, mood: c.mood };
+    });
+
+    let linePathHTML = "";
+    let areaPathHTML = "";
+    let dotsHTML = "";
+    let labelsHTML = "";
+
+    if (coords.length > 0) {
+        if (coords.length > 1) {
+            // Draw stroke line connecting all points
+            const pathD = "M " + coords.map(pt => `${pt.x} ${pt.y}`).join(" L ");
+            linePathHTML = `<path d="${pathD}" class="chart-line" />`;
+
+            // Draw filled gradient area under the line
+            const areaD = pathD + ` L ${coords[coords.length - 1].x} 160 L ${coords[0].x} 160 Z`;
+            areaPathHTML = `<path d="${areaD}" class="chart-area" />`;
+        }
+
+        // Draw interactive nodes (dots) and text labels
+        coords.forEach((pt, index) => {
+            const showLabel = coords.length <= 6 || index % 2 === 0 || index === coords.length - 1;
+            
+            dotsHTML += `
+                <circle cx="${pt.x}" cy="${pt.y}" r="5.5" class="chart-dot">
+                    <title>Day ${pt.day}: ${pt.mood}</title>
+                </circle>
+            `;
+
+            if (showLabel) {
+                labelsHTML += `<text x="${pt.x}" y="176" class="chart-label">Day ${pt.day}</text>`;
+            }
+        });
+    }
+
+    // Build the final SVG structure
+    container.innerHTML = `
+        <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="mood-gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+                </linearGradient>
+            </defs>
+            ${gridLinesHTML}
+            ${areaPathHTML}
+            ${linePathHTML}
+            ${dotsHTML}
+            ${labelsHTML}
+        </svg>
+    `;
+}
+
 // Initialize on load with error catch
 try {
     renderProfile();
+    renderMoodChart();
 } catch (error) {
     console.error("Error rendering profile:", error);
 }

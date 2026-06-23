@@ -1,0 +1,152 @@
+/* ── pages/Topics.css ── */
+.topics-header {
+  margin-bottom: 24px;
+}
+
+.topics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.difficulty-section {
+  margin-bottom: 12px;
+}
+
+.difficulty-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.difficulty-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.difficulty-label {
+  width: 50px;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-2);
+}
+
+.difficulty-bar-bg {
+  flex: 1;
+  background: var(--surface-2);
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.difficulty-bar-fill {
+  background: var(--accent);
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease-out;
+}
+
+.difficulty-count {
+  width: 40px;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* Tag Breakdown Table */
+.topics-table-card {
+  overflow-x: auto;
+}
+
+.topics-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.topics-table th {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.topics-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.topics-table tr:last-child td {
+  border-bottom: none;
+}
+
+.topics-table tr:hover td {
+  background: var(--bg);
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.status-indicator.weak {
+  color: var(--danger);
+}
+
+.status-indicator.needs-work {
+  color: var(--warning);
+}
+
+.status-indicator.strong {
+  color: var(--success);
+}
+
+/* Weakness Buster recommendations cards grid */
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.rec-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.rec-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.rec-id {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.rec-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  min-height: 40px;
+}
+

@@ -1,0 +1,288 @@
+/* ── pages/Compare.css ── */
+.compare-header {
+  margin-bottom: 24px;
+}
+
+.compare-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.compare-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.comparison-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 768px) {
+  .comparison-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
+  margin-bottom: 12px;
+}
+
+.compare-profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.compare-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.compare-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.compare-handle-display {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.chart-section {
+  margin-bottom: 28px;
+}
+
+.insight-card {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-light);
+  color: var(--accent-text);
+  padding: 16px 20px;
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+
+.struggles-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .struggles-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.struggle-column h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.struggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.struggle-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.struggle-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.struggle-item-name {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.struggle-item-name:hover {
+  color: var(--accent);
+}
+
+.struggle-item-meta {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.tag-badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tag-badge {
+  font-size: 11px;
+  background: var(--surface-3);
+  color: var(--text-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.weak-tag-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.weak-tag-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weak-tag-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.weak-tag-progress-bg {
+  background: var(--surface-3);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.weak-tag-progress-fill {
+  background: var(--warning);
+  height: 100%;
+}
+
+/* Milestone Velocity Comparison Styles */
+.milestones-section {
+  margin-bottom: 28px;
+}
+
+.milestones-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.milestones-table th {
+  padding: 10px 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.milestones-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.milestones-table tr:hover td {
+  background: var(--surface-2);
+}
+
+/* Contest Face-offs Selector and Tables */
+.faceoff-section {
+  margin-bottom: 28px;
+}
+
+.faceoff-selector-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  max-width: 480px;
+}
+
+.faceoff-timeline-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.faceoff-timeline-table th {
+  padding: 10px 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.faceoff-timeline-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.faceoff-timeline-table tr:hover td {
+  background: var(--surface-2);
+}
+
+.solved-time-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.solved-time-badge.solved {
+  background: var(--accent-light);
+  color: var(--accent-text);
+}
+
+.solved-time-badge.unsolved {
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+
+/* Compare Grid Layout */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-col-left, .compare-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

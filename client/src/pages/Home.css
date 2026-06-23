@@ -1,0 +1,199 @@
+/* ── pages/Home.css ── */
+.dashboard-header {
+  margin-bottom: 28px;
+}
+
+.dashboard-subtitle {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.heatmap-section h3,
+.solves-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+/* Heatmap Grid */
+.heatmap-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr); /* 90 days divided by weeks or simple grid columns */
+  gap: 8px;
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--surface-2);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.15);
+  z-index: 10;
+}
+
+.heatmap-cell.no-activity {
+  background: var(--surface-2);
+}
+
+.heatmap-cell.failed-attempts {
+  background: var(--warning);
+  opacity: 0.7;
+}
+
+.heatmap-cell.accepted-solves {
+  background: var(--accent);
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-top: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend-dot.no { background: var(--surface-2); }
+.legend-dot.fail { background: var(--warning); opacity: 0.7; }
+.legend-dot.ac { background: var(--accent); }
+
+/* Recent Solves List */
+.solves-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.solve-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.solve-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.solve-name {
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.solve-name:hover {
+  color: var(--accent);
+}
+
+.solve-tags {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.solve-meta {
+  text-align: right;
+}
+
+.solve-rating {
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+/* Banner setup */
+.connect-banner {
+  background: var(--accent-light);
+  border: 1px dashed var(--accent);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.connect-banner h3 {
+  color: var(--accent-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.connect-banner p {
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+.connect-form {
+  display: flex;
+  gap: 12px;
+  max-width: 400px;
+}

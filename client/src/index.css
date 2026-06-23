@@ -1,0 +1,163 @@
+/* ── Google Fonts ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────── */
+:root {
+  /* Accent: Emerald Green — the ONLY non-neutral colour */
+  --accent:       #059669;   /* emerald-600 */
+  --accent-hover: #047857;   /* emerald-700 */
+  --accent-light: #d1fae5;   /* emerald-100 — for badges, highlights */
+  --accent-text:  #065f46;   /* emerald-800 — text on light accent bg */
+
+  /* Backgrounds */
+  --bg:           #f9fafb;   /* grey-50 — page background */
+  --surface:      #ffffff;   /* white — cards */
+  --surface-2:    #f3f4f6;   /* grey-100 — inputs, nested panels */
+  --surface-3:    #e5e7eb;   /* grey-200 — dividers, hover states */
+
+  /* Borders */
+  --border:       #e5e7eb;   /* grey-200 */
+  --border-focus: #059669;   /* emerald on focus */
+
+  /* Text */
+  --text:         #111827;   /* grey-900 — primary */
+  --text-2:       #6b7280;   /* grey-500 — secondary */
+  --text-3:       #9ca3af;   /* grey-400 — muted/placeholder */
+
+  /* Status colours — ONLY for data indicators, not UI chrome */
+  --success:      #059669;   /* same as accent */
+  --warning:      #d97706;   /* amber-600 — for caution states */
+  --danger:       #dc2626;   /* red-600 — for errors only */
+
+  /* CF Rank colours (used only for rank badges) */
+  --cf-newbie:    #808080;
+  --cf-pupil:     #008000;
+  --cf-specialist:#03a89e;
+  --cf-expert:    #0000ff;
+  --cf-cm:        #aa00aa;
+  --cf-master:    #ff8c00;
+  --cf-grandmaster:#ff0000;
+
+  /* Layout */
+  --sidebar-w:    240px;
+  --radius:       8px;
+  --radius-lg:    12px;
+  --shadow:       0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:    0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Reset ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* ── Utility classes ──────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.12s, box-shadow 0.12s;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.form-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.12s;
+}
+.form-input:focus { border-color: var(--border-focus); }
+.form-input::placeholder { color: var(--text-3); }
+
+select.form-input { cursor: pointer; }
+
+.subtitle { font-size: 13px; color: var(--text-2); }
+.page-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.badge-accent { background: var(--accent-light); color: var(--accent-text); }
+.error-msg { color: var(--danger); font-size: 13px; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

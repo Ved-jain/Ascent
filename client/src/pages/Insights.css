@@ -1,0 +1,139 @@
+.insights-container {
+  padding: 24px;
+  animation: fadeIn 0.4s ease;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.insights-header {
+  margin-bottom: 32px;
+}
+
+.insights-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  background: linear-gradient(to right, #a855f7, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.insights-header p {
+  color: var(--text-2);
+  font-size: 15px;
+}
+
+.insights-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.metrics-panel {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+}
+
+.metrics-panel h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.metrics-panel .subtitle {
+  color: var(--text-2);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.metric-card {
+  background: var(--bg);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.metric-label {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.highlight-green {
+  color: #10b981;
+}
+
+.highlight-blue {
+  color: #3b82f6;
+}
+
+.charts-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.chart-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card h3 {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.chart-wrapper {
+  flex: 1;
+  min-height: 300px;
+  position: relative;
+}
+
+.no-data {
+  color: var(--text-2);
+  font-size: 14px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 800px) {
+  .charts-panel {
+    grid-template-columns: 1fr;
+  }
+}

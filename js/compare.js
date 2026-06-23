@@ -101,10 +101,21 @@ try {
     console.error("Error reading problems status:", e);
 }
 
+// Load cached Codeforces solves count
+let cfSolvesCount = 0;
+try {
+    const cachedCf = localStorage.getItem("ascent_cf_solves");
+    if (cachedCf) {
+        cfSolvesCount = parseInt(cachedCf, 10) || 0;
+    }
+} catch (e) {
+    console.error("Error reading Codeforces solves count:", e);
+}
+
 for (let day = 1; day <= totalTimelineDays; day++) {
     // Check if user has a real checkin for this relativeDay
     const realCheckin = checkins.find(c => c.relativeDay === day);
-    const daySolves = 50 + (day * 3) + compareSolvedCount;
+    const daySolves = 50 + (day * 3) + compareSolvedCount + cfSolvesCount;
     
     if (realCheckin) {
         userTimeline[day] = {
@@ -136,10 +147,11 @@ const peerSelect = document.getElementById("peer-select");
 const daySlider = document.getElementById("day-slider");
 const dayDisplay = document.getElementById("day-display");
 
-// Setup slider bounds based on user's current day
-daySlider.max = userProfile.currentDay;
+// Setup slider bounds based on total timeline days (at least 14 days)
+daySlider.max = totalTimelineDays;
+daySlider.value = userProfile.currentDay; // Start slider at user's current day
 const sliderMaxSpan = document.querySelector(".slider-bounds span:last-child");
-if (sliderMaxSpan) sliderMaxSpan.textContent = `Day ${userProfile.currentDay}`;
+if (sliderMaxSpan) sliderMaxSpan.textContent = `Day ${totalTimelineDays}`;
 
 // User elements selectors
 const userNameLabel = document.querySelector(".user-card h3");
@@ -152,7 +164,7 @@ const userBreakthrough = document.getElementById("user-breakthrough");
 
 // Peer elements selectors
 const peerName = document.getElementById("peer-name");
-const peerDayDisplays = document.querySelectorAll(".peer-day-display");
+const cardDayBadges = document.querySelectorAll(".card-day-badge");
 const peerSolves = document.getElementById("peer-solves");
 const peerComfortEmoji = document.querySelector(".peer-card .comfort-display .emoji");
 const peerComfortText = document.querySelector(".peer-card .comfort-display .text");
@@ -165,10 +177,10 @@ const insightText = document.getElementById("insight-text");
 
 /* ================= RENDER ENGINE ================= */
 function renderComparison() {
-    // If the slider value exceeds userProfile.currentDay (due to changes), clamp it
+    // If the slider value exceeds totalTimelineDays (due to changes), clamp it
     let relativeDay = parseInt(daySlider.value, 10);
-    if (relativeDay > userProfile.currentDay) {
-        relativeDay = userProfile.currentDay;
+    if (relativeDay > totalTimelineDays) {
+        relativeDay = totalTimelineDays;
         daySlider.value = relativeDay;
     }
     
@@ -176,7 +188,9 @@ function renderComparison() {
     
     // Update Slider Header Display
     dayDisplay.textContent = `Day ${relativeDay}`;
-    peerDayDisplays.forEach(el => el.textContent = `Day ${relativeDay}`);
+    
+    // Update day badges on both cards
+    cardDayBadges.forEach(el => el.textContent = `Day ${relativeDay}`);
 
     // 1. Fetch data nodes
     const userData = userTimeline[relativeDay];

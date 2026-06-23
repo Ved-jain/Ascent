@@ -1,0 +1,125 @@
+/* ── pages/Friends.css ── */
+.friends-header {
+  margin-bottom: 28px;
+}
+
+.add-friend-card {
+  margin-bottom: 24px;
+}
+
+.add-friend-form {
+  display: flex;
+  gap: 12px;
+}
+
+.friends-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.friend-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.friend-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.friend-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.friend-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface-2);
+}
+
+.friend-info-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.friend-handle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.friend-rank {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.friend-rating-badge {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.friend-details-block {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.friend-comparison-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-text);
+  background: var(--accent-light);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.friend-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.friend-actions .btn {
+  flex: 1;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.friends-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.friends-empty-state h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.friends-empty-state p {
+  font-size: 13px;
+  color: var(--text-2);
+  max-width: 320px;
+  margin: 0 auto;
+}

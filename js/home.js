@@ -142,8 +142,19 @@ function renderDashboard() {
         console.error("Error reading problems status:", e);
     }
 
-    // Compute solved count (e.g. baseline of 50 solves, plus 3 solves per reflection, plus actual solved count)
-    const baseSolves = 50 + (totalActive * 3) + solvedCount;
+    // Read cached Codeforces solves count
+    let cfSolvesCount = 0;
+    try {
+        const cachedCf = localStorage.getItem("ascent_cf_solves");
+        if (cachedCf) {
+            cfSolvesCount = parseInt(cachedCf, 10) || 0;
+        }
+    } catch (e) {
+        console.error("Error reading Codeforces solves count:", e);
+    }
+
+    // Compute solved count (e.g. baseline of 50 solves, plus 3 solves per reflection, plus actual solved count, plus Codeforces solves)
+    const baseSolves = 50 + (totalActive * 3) + solvedCount + cfSolvesCount;
 
     if (elements.activeDays) elements.activeDays.textContent = totalActive;
     if (elements.currentStreak) elements.currentStreak.textContent = activeStreak;
@@ -266,10 +277,51 @@ if (elements.prevBtn) {
     });
 }
 
+/* ================= CODEFORCES API INTEGRATION ================= */
+async function fetchCodeforcesStats(handle) {
+    if (!handle) return;
+    try {
+        const response = await fetch(`https://codeforces.com/api/user.status?handle=${encodeURIComponent(handle)}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.status === "OK" && Array.isArray(data.result)) {
+            const solvedProblems = new Set();
+            data.result.forEach(sub => {
+                if (sub.verdict === "OK" && sub.problem) {
+                    const problemId = `${sub.problem.contestId}_${sub.problem.index}`;
+                    solvedProblems.add(problemId);
+                }
+            });
+            const uniqueSolvesCount = solvedProblems.size;
+            localStorage.setItem("ascent_cf_solves", uniqueSolvesCount);
+            
+            // Re-render to display the updated solve counts
+            renderDashboard();
+        }
+    } catch (error) {
+        console.error("Error fetching Codeforces stats:", error);
+    }
+}
+
 /* ================= INITIALIZATION ================= */
 function init() {
     renderDashboard();
     updateSpotlight();
+
+    // Trigger Codeforces stats fetch if handle exists
+    const profileStr = localStorage.getItem("ascent_profile");
+    if (profileStr) {
+        try {
+            const profile = JSON.parse(profileStr);
+            if (profile && profile.codeforces) {
+                fetchCodeforcesStats(profile.codeforces);
+            }
+        } catch (e) {
+            console.error("Error parsing profile for Codeforces fetch:", e);
+        }
+    }
 }
 
 init();
