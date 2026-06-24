@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Sidebar from '../components/Sidebar.jsx';
 import api from '../api/client.js';
+import ReactMarkdown from 'react-markdown';
 import '../components/Layout.css';
 import './Home.css';
 
@@ -341,8 +342,8 @@ export default function Home() {
                 </div>
                 
                 {aiAnalysis && (
-                  <div className="ai-response" style={{ background: 'var(--surface-2)', padding: '16px', borderRadius: 'var(--radius)', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                    {aiAnalysis}
+                  <div className="ai-response">
+                    <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
                   </div>
                 )}
               </section>

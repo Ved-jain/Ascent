@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../context/AuthContext.jsx';
 import Sidebar from '../components/Sidebar.jsx';
 import api from '../api/client.js';
@@ -826,7 +827,7 @@ export default function Compare() {
                           
                           {aiAnalysis && (
                             <div className="ai-response" style={{ background: 'var(--surface-2)', padding: '16px', borderRadius: 'var(--radius)', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
-                              {aiAnalysis}
+                              <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
                             </div>
                           )}
                         </section>
