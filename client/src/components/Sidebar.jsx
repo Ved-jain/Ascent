@@ -117,13 +117,6 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/leaderboard"
-          className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-        >
-          Leaderboard
-        </NavLink>
-
-        <NavLink
           to="/profile"
           className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
         >

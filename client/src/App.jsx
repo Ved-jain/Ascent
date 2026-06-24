@@ -12,7 +12,6 @@ import Profile from './pages/Profile.jsx';
 import Upsolve from './pages/Upsolve.jsx';
 import SkillTree from './pages/SkillTree.jsx';
 import Insights from './pages/Insights.jsx';
-import Leaderboard from './pages/Leaderboard.jsx';
 import ContestHub from './pages/ContestHub.jsx';
 
 /**
@@ -39,7 +38,6 @@ export default function App() {
           <Route path="/upsolve"  element={<ProtectedRoute><Upsolve /></ProtectedRoute>} />
           <Route path="/skilltree" element={<ProtectedRoute><SkillTree /></ProtectedRoute>} />
           <Route path="/insights"  element={<ProtectedRoute><Insights /></ProtectedRoute>} />
-          <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
           <Route path="/contesthub" element={<ProtectedRoute><ContestHub /></ProtectedRoute>} />
 
           {/* Catch-all redirect */}
