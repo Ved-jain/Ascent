@@ -23,7 +23,9 @@ const CustomTooltip = ({ active, payload }) => {
           boxShadow: 'var(--shadow-md)'
         }}
       >
-        <p style={{ fontWeight: '700', margin: 0, color: 'var(--text)' }}>Rating: {data.rating}</p>
+        <p style={{ fontWeight: '700', margin: 0, color: 'var(--text)' }}>
+          {data.rating ? `Rating: ${data.rating}` : `Predicted: ${data.predictedRating}`}
+        </p>
         <p style={{ color: 'var(--text-2)', margin: '4px 0 2px', maxWidth: '240px', lineHeight: 1.3 }}>
           {data.contest}
         </p>
@@ -44,6 +46,7 @@ export default function Profile() {
   const { user } = useAuth();
   const [cfData, setCfData] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [prediction, setPrediction] = useState(null);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -66,10 +69,15 @@ export default function Profile() {
     setLoading(true);
     setError('');
 
-    Promise.all([api.getCFData(myHandle), api.getNotes()])
-      .then(([cf, notesList]) => {
+    Promise.all([
+      api.getCFData(myHandle), 
+      api.getNotes(),
+      api.getPrediction(myHandle).catch(() => null) // Ignore errors, gracefully degrade
+    ])
+      .then(([cf, notesList, predData]) => {
         setCfData(cf);
         setNotes(notesList || []);
+        setPrediction(predData);
       })
       .catch(err => {
         console.error('Failed to load profile details:', err);
@@ -165,6 +173,20 @@ export default function Profile() {
       contest: c.contestName,
       rank: c.rank
     }));
+
+    // Add predicted point to chartData
+    if (prediction && chartData.length > 0) {
+      const lastPoint = chartData[chartData.length - 1];
+      // To connect the lines, we need the last actual point to also have a 'predictedRating'
+      lastPoint.predictedRating = lastPoint.rating;
+      
+      chartData.push({
+        date: 'Next',
+        predictedRating: prediction.predictedRating,
+        contest: 'Predicted Next Rating',
+        rank: 'N/A'
+      });
+    }
 
     // 6. Top 8 tags calculation
     const tagSolvedSet = {};
@@ -313,8 +335,42 @@ export default function Profile() {
                           dot={{ stroke: 'var(--accent)', strokeWidth: 1, r: 3, fill: '#fff' }}
                           activeDot={{ r: 5 }}
                         />
+                        {prediction && (
+                          <Line
+                            type="monotone"
+                            dataKey="predictedRating"
+                            stroke="#8b5cf6"
+                            strokeWidth={3}
+                            strokeDasharray="5 5"
+                            dot={{ stroke: '#8b5cf6', strokeWidth: 1, r: 3, fill: '#fff' }}
+                            activeDot={{ r: 5 }}
+                          />
+                        )}
                       </LineChart>
                     </ResponsiveContainer>
+                  </div>
+                </section>
+              )}
+
+              {/* Predictor Info Widget */}
+              {prediction && (
+                <section className="card" style={{ marginBottom: '24px', display: 'flex', gap: '20px', alignItems: 'center' }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: '15px', fontWeight: '600', color: 'var(--text)', marginBottom: '8px' }}>
+                      Mathematical Rating Predictor
+                    </h3>
+                    <p style={{ color: 'var(--text-2)', fontSize: '13px', margin: 0 }}>
+                      {prediction.message}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '4px' }}>Predicted Next Rating</div>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--accent)' }}>
+                      {prediction.predictedRating} <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--text-3)' }}>± {prediction.confidenceRange}</span>
+                    </div>
+                    <div style={{ fontSize: '13px', fontWeight: '500', color: prediction.slope > 0 ? '#10b981' : '#ef4444' }}>
+                      Trend: {prediction.trend}
+                    </div>
                   </div>
                 </section>
               )}

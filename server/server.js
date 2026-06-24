@@ -24,6 +24,8 @@ import recommendRoutes from './routes/recommend.js';
 import metricsRoutes from './routes/metrics.js';
 import contestsRoutes from './routes/contests.js';
 import prepRoutes from './routes/prep.js';
+import predictRoutes from './routes/predict.js';
+import recommendationsRoutes from './routes/recommendations.js';
 
 // ── 1. Connect to Database first ─────────────────────────
 //    We await the DB connection before starting the server.
@@ -56,6 +58,8 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/contests', contestsRoutes);
 app.use('/api/prep', prepRoutes);
+app.use('/api/predict', predictRoutes);
+app.use('/api/recommendations', recommendationsRoutes);
 
 // ── 5. Health Check Route ─────────────────────────────────
 //    A simple GET route so we can confirm the server is alive.

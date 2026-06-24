@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import User from '../models/User.js';
 import CFCache from '../models/CFCache.js';
 import authenticate from '../middleware/auth.js';
+import { cacheGet, cacheSet } from '../utils/redis.js';
 
 const router = express.Router();
 
@@ -37,8 +38,26 @@ async function getCodeforcesProblemset() {
  */
 router.get('/:handle/recommendations', authenticate, async (req, res) => {
   const requestHandle = req.params.handle.trim().toLowerCase();
+  const cacheKey = `recommendations:${requestHandle}`;
 
   try {
+    // 1. Measure response time and try to get recommendations from Redis Cache first
+    const startTime = performance.now();
+    const cachedRecs = await cacheGet(cacheKey);
+
+    if (cachedRecs) {
+      // Cache HIT
+      const latency = (performance.now() - startTime).toFixed(2);
+      console.log(`[Redis] Cache HIT for recommendations (${requestHandle}) - Response Time: ${latency}ms`);
+      return res.json(cachedRecs);
+    }
+
+    // Cache MISS
+    const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
+    console.log(`[Redis] Cache MISS for recommendations (${requestHandle}) - Lookup took ${cacheLookupLatency}ms. Generating fresh recommendations...`);
+
+    const genStartTime = performance.now();
+
     // 1. Fetch user cache details
     const cfCache = await CFCache.findOne({ handle: requestHandle });
     if (!cfCache) {
@@ -131,6 +150,14 @@ router.get('/:handle/recommendations', authenticate, async (req, res) => {
         selected.push(selectionSlice[randIdx]);
       }
     }
+
+    const genLatency = (performance.now() - genStartTime).toFixed(2);
+
+    // 5. Cache the generated recommendations
+    // TTL is 1 hour (3600 seconds) as requested to avoid constantly recalculating
+    await cacheSet(cacheKey, selected, 3600);
+
+    console.log(`[Source] Generated recommendations for ${requestHandle} - Time taken: ${genLatency}ms.`);
 
     return res.json(selected);
 

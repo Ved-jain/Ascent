@@ -43,6 +43,9 @@ const api = {
   // AI endpoints
   getAICoach:   (data) => http.post('/ai/coach', data).then(r => r.data),
   getAIRivalry: (data) => http.post('/ai/rivalry', data).then(r => r.data),
+
+  // Predictor
+  getPrediction: (handle) => http.get(`/predict/${handle}`).then(r => r.data),
 };
 
 export default api;
