@@ -59,9 +59,11 @@ router.get('/:handle', async (req, res) => {
     // Wrap fetches in try-catch to identify CF specific API issues
     let userInfo, ratingHistory, submissions;
     try {
-      userInfo = await fetchUserInfo(handle);
-      ratingHistory = await fetchUserRating(handle);
-      submissions = await fetchUserSubmissions(handle);
+      [userInfo, ratingHistory, submissions] = await Promise.all([
+        fetchUserInfo(handle),
+        fetchUserRating(handle),
+        fetchUserSubmissions(handle)
+      ]);
     } catch (cfErr) {
       console.error(`Error calling CF API for handle ${handle}:`, cfErr.message);
       return res.status(404).json({ message: `Could not fetch Codeforces data for handle "${handle}". Check if the handle is valid.` });
@@ -146,9 +148,11 @@ router.get('/:handle/struggles', async (req, res) => {
 
     if (isStale) {
       try {
-        const userInfo = await fetchUserInfo(handle);
-        const ratingHistory = await fetchUserRating(handle);
-        const submissions = await fetchUserSubmissions(handle);
+        const [userInfo, ratingHistory, submissions] = await Promise.all([
+          fetchUserInfo(handle),
+          fetchUserRating(handle),
+          fetchUserSubmissions(handle)
+        ]);
         const struggles = computeStruggles(submissions);
         
         if (cached) {

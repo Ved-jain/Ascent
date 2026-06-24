@@ -127,6 +127,7 @@ export default function Home() {
   let contestCount = 0;
   let heatmapCells = [];
   let recentSolves = [];
+  let topTags = [];
 
   if (cfData) {
     const submissions = cfData.submissions || [];
@@ -221,6 +222,26 @@ export default function Home() {
         if (recentSolves.length >= 5) break;
       }
     }
+
+    // 7. Top Tags Mastery
+    const tagCounts = {};
+    const seenForTags = new Set();
+    for (const sub of acs) {
+      const key = `${sub.problem.contestId}${sub.problem.index}`;
+      if (!seenForTags.has(key)) {
+        seenForTags.add(key);
+        if (sub.problem.tags) {
+          sub.problem.tags.forEach(tag => {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          });
+        }
+      }
+    }
+    
+    topTags = Object.entries(tagCounts)
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
   }
 
   return (
@@ -242,8 +263,9 @@ export default function Home() {
           </header>
 
           {loading ? (
-            <div className="card" style={{ textAlign: 'center', padding: '40px' }}>
-              <p style={{ color: 'var(--text-2)' }}>Fetching data from Codeforces...</p>
+            <div className="dashboard-grid">
+              <div className="card skeleton" style={{ height: '250px' }}></div>
+              <div className="card skeleton" style={{ height: '250px' }}></div>
             </div>
           ) : !handle ? (
             <section className="connect-banner">
@@ -328,36 +350,61 @@ export default function Home() {
               {/* Main content grid */}
               <div className="dashboard-grid">
                 
-                {/* Left side: Heatmap */}
-                <section className="card heatmap-section">
-                  <h3>Activity Heatmap</h3>
-                  <div className="heatmap-container">
-                    <div className="heatmap-grid">
-                      {heatmapCells.map((cell) => (
-                        <div
-                          key={cell.dateStr}
-                          className={`heatmap-cell ${cell.status}`}
-                          title={cell.tooltip}
-                        />
-                      ))}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                  {/* Left side top: Heatmap */}
+                  <section className="card heatmap-section">
+                    <h3>Activity Heatmap</h3>
+                    <div className="heatmap-container">
+                      <div className="heatmap-grid">
+                        {heatmapCells.map((cell) => (
+                          <div
+                            key={cell.dateStr}
+                            className={`heatmap-cell ${cell.status}`}
+                            data-tooltip={cell.tooltip}
+                          />
+                        ))}
+                      </div>
+                      
+                      <div className="heatmap-legend">
+                        <div className="legend-item">
+                          <div className="legend-dot no" />
+                          <span>No submissions</span>
+                        </div>
+                        <div className="legend-item">
+                          <div className="legend-dot fail" />
+                          <span>Attempted but failed</span>
+                        </div>
+                        <div className="legend-item">
+                          <div className="legend-dot ac" />
+                          <span>Solved problems</span>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="heatmap-legend">
-                      <div className="legend-item">
-                        <div className="legend-dot no" />
-                        <span>No submissions</span>
+                  </section>
+
+                  {/* Left side bottom: Tag Mastery Section */}
+                  {topTags.length > 0 && (
+                    <section className="card tag-mastery-section">
+                      <h3>Top Tags Mastery</h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {topTags.map((t) => {
+                          const percentage = (t.count / topTags[0].count) * 100;
+                          return (
+                            <div key={t.tag} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                <span style={{ fontWeight: 600, color: 'var(--text)' }}>{t.tag}</span>
+                                <span style={{ color: 'var(--text-2)', fontSize: '12px' }}>{t.count} solved</span>
+                              </div>
+                              <div style={{ background: 'var(--surface-2)', height: '6px', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{ background: 'var(--accent)', height: '100%', width: `${percentage}%`, borderRadius: '3px' }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                      <div className="legend-item">
-                        <div className="legend-dot fail" />
-                        <span>Attempted but failed</span>
-                      </div>
-                      <div className="legend-item">
-                        <div className="legend-dot ac" />
-                        <span>Solved problems</span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
+                    </section>
+                  )}
+                </div>
 
                 {/* Right side: Recent Solves */}
                 <section className="card solves-section">
@@ -397,7 +444,6 @@ export default function Home() {
                     </p>
                   )}
                 </section>
-
               </div>
             </>
           )}

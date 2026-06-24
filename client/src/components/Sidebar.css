@@ -5,12 +5,14 @@
   left: 0;
   width: var(--sidebar-w);
   height: 100vh;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.85);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 24px 16px;
   z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .sidebar-logo {

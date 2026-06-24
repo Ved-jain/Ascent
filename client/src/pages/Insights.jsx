@@ -31,7 +31,7 @@ ChartJS.register(
 
 function Insights() {
   const { user } = useAuth();
-  const myHandle = user?.handle;
+  const myHandle = user?.codeforcesHandle || user?.cfHandle || user?.handle;
 
   const [metrics, setMetrics] = useState(null);
   const [profileData, setProfileData] = useState(null);
@@ -126,9 +126,16 @@ function Insights() {
 
   return (
     <div className="insights-container">
+      <button 
+        className="btn btn-ghost" 
+        onClick={() => window.history.back()} 
+        style={{ marginBottom: '16px', padding: '8px 16px' }}
+      >
+        &larr; Back
+      </button>
       <header className="insights-header">
-        <h1>System Insights & Analytics Engine</h1>
-        <p>Live metrics from the custom In-Memory Caching Engine and data visualizations parsing massive Codeforces histories.</p>
+        <h1>System Insights & Analytics</h1>
+        <p>Live metrics from the custom In-Memory Cache and personalized algorithmic diagnostics.</p>
       </header>
 
       <div className="insights-grid">

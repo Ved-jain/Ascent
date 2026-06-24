@@ -110,10 +110,17 @@ export default function Sidebar() {
         </NavLink>
 
         <NavLink
-          to="/insights"
+          to="/contesthub"
           className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
         >
-          System Insights
+          Contest Hub
+        </NavLink>
+
+        <NavLink
+          to="/leaderboard"
+          className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+        >
+          Leaderboard
         </NavLink>
 
         <NavLink
@@ -172,6 +179,12 @@ export default function Sidebar() {
           }}
         />
       )}
+      {/* Admin/Settings hidden link */}
+      <div className="sidebar-footer" style={{ textAlign: 'right', marginTop: 'auto', paddingTop: '10px' }}>
+        <NavLink to="/insights" className="admin-link" title="System Insights" style={{ textDecoration: 'none', filter: 'grayscale(1)', opacity: 0.5 }}>
+          ⚙️
+        </NavLink>
+      </div>
     </div>
   );
 }

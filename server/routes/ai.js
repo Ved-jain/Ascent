@@ -1,5 +1,6 @@
 import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { apiCache } from '../utils/cache.js';
 
 const router = express.Router();
 
@@ -14,7 +15,16 @@ router.post('/coach', async (req, res) => {
     return res.status(500).json({ error: 'GEMINI_API_KEY is not set in the server .env file.' });
   }
 
+  const handle = profileData?.handle || 'unknown';
+  const cacheKey = `ai_coach_${handle}`;
+
   try {
+    const memCached = apiCache.get(cacheKey);
+    if (memCached) {
+      console.log(`[Cache] Memory hit for AI Coach ${handle}`);
+      return res.json({ analysis: memCached });
+    }
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
@@ -36,9 +46,15 @@ Give me a short, punchy "roast" of my recent performance, then give me 2 concret
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
+    // Cache AI response for 60 minutes to aggressively avoid rate limits
+    apiCache.set(cacheKey, responseText, 60 * 60);
+
     res.json({ analysis: responseText });
   } catch (err) {
-    console.error('Gemini API Error:', err);
+    console.error('Gemini API Error:', err.status, err.message);
+    if (err.status === 429) {
+      return res.status(429).json({ error: 'Whoa there! The Gemini API rate limit has been exceeded. Please take a deep breath and try again in about 60 seconds.' });
+    }
     res.status(500).json({ error: 'Failed to generate AI analysis.' });
   }
 });
@@ -54,7 +70,17 @@ router.post('/rivalry', async (req, res) => {
     return res.status(500).json({ error: 'GEMINI_API_KEY is not set in the server .env file.' });
   }
 
+  const myHandle = myProfileData?.handle || 'p1';
+  const friendHandle = friendProfileData?.handle || 'p2';
+  const cacheKey = `ai_rivalry_${myHandle}_${friendHandle}`;
+
   try {
+    const memCached = apiCache.get(cacheKey);
+    if (memCached) {
+      console.log(`[Cache] Memory hit for AI Rivalry ${myHandle} vs ${friendHandle}`);
+      return res.json({ analysis: memCached });
+    }
+
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
@@ -73,9 +99,15 @@ Write a short, hype-filled "Tale of the Tape" analysis comparing their profiles.
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
+    // Cache AI response for 60 minutes
+    apiCache.set(cacheKey, responseText, 60 * 60);
+
     res.json({ analysis: responseText });
   } catch (err) {
-    console.error('Gemini API Error:', err);
+    console.error('Gemini API Error:', err.status, err.message);
+    if (err.status === 429) {
+      return res.status(429).json({ error: 'Whoa there! The Gemini API rate limit has been exceeded. Please take a deep breath and try again in about 60 seconds.' });
+    }
     res.status(500).json({ error: 'Failed to generate AI analysis.' });
   }
 });

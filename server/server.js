@@ -22,6 +22,9 @@ import notesRoutes from './routes/notes.js';
 import compareRoutes from './routes/compare.js';
 import recommendRoutes from './routes/recommend.js';
 import metricsRoutes from './routes/metrics.js';
+import leaderboardRoutes from './routes/leaderboard.js';
+import contestsRoutes from './routes/contests.js';
+import prepRoutes from './routes/prep.js';
 
 // ── 1. Connect to Database first ─────────────────────────
 //    We await the DB connection before starting the server.
@@ -52,6 +55,9 @@ app.use('/api/notes', notesRoutes);
 app.use('/api/compare', compareRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/metrics', metricsRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/contests', contestsRoutes);
+app.use('/api/prep', prepRoutes);
 
 // ── 5. Health Check Route ─────────────────────────────────
 //    A simple GET route so we can confirm the server is alive.
