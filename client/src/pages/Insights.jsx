@@ -43,16 +43,17 @@ function Insights() {
       setLoading(true);
       try {
         // 1. Fetch Backend Cache System Metrics
-        const metricsRes = await axios.get('http://localhost:5000/api/metrics/cache');
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const metricsRes = await axios.get(`${API_URL}/api/metrics/cache`);
         setMetrics(metricsRes.data);
 
         if (myHandle) {
           // 2. Fetch User Profile Data for Charts
-          const profileRes = await axios.get(`http://localhost:5000/api/cf/${myHandle}`);
+          const profileRes = await axios.get(`${API_URL}/api/cf/${myHandle}`);
           setProfileData(profileRes.data);
 
           // 3. Fetch Struggles
-          const strugglesRes = await axios.get(`http://localhost:5000/api/cf/${myHandle}/struggles`);
+          const strugglesRes = await axios.get(`${API_URL}/api/cf/${myHandle}/struggles`);
           setStruggles(strugglesRes.data);
         }
       } catch (error) {

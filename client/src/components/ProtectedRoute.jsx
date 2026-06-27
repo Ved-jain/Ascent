@@ -16,8 +16,8 @@ export default function ProtectedRoute({ children }) {
   // Still checking localStorage — don't redirect yet
   if (loading) return null;
 
-  // Not logged in → send to login page
-  if (!user) return <Navigate to="/login" replace />;
+  // Not logged in → send to landing page
+  if (!user) return <Navigate to="/landing" replace />;
 
   // Logged in → show the page
   return children;

@@ -3,8 +3,10 @@ import CFCache from '../models/CFCache.js';
 import { fetchUserInfo, fetchUserRating, fetchUserSubmissions } from '../utils/fetchCF.js';
 import { computeStruggles } from '../utils/computeStruggles.js';
 import { apiCache } from '../utils/cache.js';
+import { validateHandleParam } from '../middleware/validate.js';
 
 const router = express.Router();
+router.param('handle', validateHandleParam);
 
 // Helper to determine if a cache document is stale (older than 30 minutes)
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import Sidebar from '../components/Sidebar.jsx';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/client.js';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import '../components/Layout.css';
@@ -47,6 +48,7 @@ export default function Profile() {
   const [cfData, setCfData] = useState(null);
   const [notes, setNotes] = useState([]);
   const [prediction, setPrediction] = useState(null);
+  const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -278,6 +280,18 @@ export default function Profile() {
                 )}
                 <span>Member since: {memberSince}</span>
               </div>
+              
+              {myHandle && (
+                <div style={{ marginTop: '16px' }}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={() => navigate(`/compare?peer=${myHandle}`)}
+                    style={{ fontSize: '13px', padding: '8px 16px', background: '#10b981', border: 'none', color: '#fff', borderRadius: '6px', fontWeight: '600', cursor: 'pointer' }}
+                  >
+                    📊 Compare Journey
+                  </button>
+                </div>
+              )}
             </div>
           </section>
 

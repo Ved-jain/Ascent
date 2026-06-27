@@ -13,7 +13,9 @@
 import 'dotenv/config';          // loads .env into process.env
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import connectDB from './db.js';
+import { cfLimiter, authLimiter, expensiveLimiter } from './middleware/rateLimiter.js';
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
 import cfRoutes from './routes/cf.js';
@@ -26,6 +28,7 @@ import contestsRoutes from './routes/contests.js';
 import prepRoutes from './routes/prep.js';
 import predictRoutes from './routes/predict.js';
 import recommendationsRoutes from './routes/recommendations.js';
+import journeyRoutes from './routes/journey.js';
 
 // ── 1. Connect to Database first ─────────────────────────
 //    We await the DB connection before starting the server.
@@ -39,7 +42,22 @@ const app = express();
 //    express.json()  → lets us read JSON bodies from requests  (req.body)
 //    cors()          → allows the frontend (different port) to call this API
 app.use(express.json());
-app.use(cors());
+app.use(helmet());
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 // ── 4. Routes ────────────────────────────────────────────
 //    Each router handles a group of related endpoints.
@@ -47,19 +65,20 @@ app.use(cors());
 //    e.g. '/api/auth' + '/register' = POST /api/auth/register
 import aiRoutes from './routes/ai.js';
 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/profile', profileRoutes);
-app.use('/api/cf', cfRoutes);
-app.use('/api/cf', recommendRoutes);
+app.use('/api/cf', cfLimiter, cfRoutes);
+app.use('/api/cf', cfLimiter, recommendRoutes);
 app.use('/api/friends', friendsRoutes);
 app.use('/api/notes', notesRoutes);
-app.use('/api/compare', compareRoutes);
+app.use('/api/compare', expensiveLimiter, compareRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/contests', contestsRoutes);
 app.use('/api/prep', prepRoutes);
 app.use('/api/predict', predictRoutes);
 app.use('/api/recommendations', recommendationsRoutes);
+app.use('/api/journey', expensiveLimiter, journeyRoutes);
 
 // ── 5. Health Check Route ─────────────────────────────────
 //    A simple GET route so we can confirm the server is alive.
@@ -83,8 +102,10 @@ app.use((req, res) => {
 //    The four parameters (err, req, res, next) are what tell
 //    Express this is an error-handling middleware.
 app.use((err, req, res, next) => {
-  console.error('Server error:', err.message);
-  res.status(500).json({ error: 'Internal server error' });
+  console.error('Server error:', err.stack);
+  res.status(500).json({ 
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message 
+  });
 });
 
 // ── 8. Start Server ──────────────────────────────────────

@@ -1,7 +1,9 @@
 import express from 'express';
 import { fetchUserRating } from '../utils/fetchCF.js';
+import { validateHandleParam } from '../middleware/validate.js';
 
 const router = express.Router();
+router.param('handle', validateHandleParam);
 
 /**
  * GET /api/predict/:handle

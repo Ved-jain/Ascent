@@ -31,7 +31,8 @@ export default function ContestHub() {
   useEffect(() => {
     const fetchContests = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/contests/upcoming');
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const res = await axios.get(`${API_URL}/api/contests/upcoming`);
         setContests(res.data);
       } catch (err) {
         console.error('Failed to load upcoming contests', err);
@@ -49,7 +50,8 @@ export default function ContestHub() {
     setLoadingPrep(true);
     setPrepError(null);
     try {
-      const res = await axios.get(`http://localhost:5000/api/prep/${handle}?goal=${goal}`, {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await axios.get(`${API_URL}/api/prep/${handle}?goal=${goal}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('ascent_token')}` }
       });
       setPrepData(res.data);

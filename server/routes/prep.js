@@ -2,8 +2,10 @@ import express from 'express';
 import fetch from 'node-fetch';
 import CFCache from '../models/CFCache.js';
 import authenticate from '../middleware/auth.js';
+import { validateHandleParam } from '../middleware/validate.js';
 
 const router = express.Router();
+router.param('handle', validateHandleParam);
 
 let cfProblemsetCache = null;
 let cfProblemsetCacheTime = null;
