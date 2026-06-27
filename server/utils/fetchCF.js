@@ -20,22 +20,24 @@ async function cfGet(endpoint, retries = 3) {
   const promise = (async () => {
     const cacheKey = `cf:${endpoint}`;
     
-    // 1. Measure response time and try to get from Redis Cache first
-    const startTime = performance.now();
-    const cachedData = await cacheGet(cacheKey);
-
-    if (cachedData) {
-      const latency = (performance.now() - startTime).toFixed(2);
-      console.log(`[Redis] Cache HIT for ${endpoint} - Response Time: ${latency}ms`);
-      return cachedData;
-    }
-
-    const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
-    console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
-
-    // 2. Fetch directly from Codeforces API with retries
+    // 1. Fetch directly from Codeforces API with retries, but check Redis first on every attempt
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
+        // Measure response time and try to get from Redis Cache first
+        const startTime = performance.now();
+        const cachedData = await cacheGet(cacheKey);
+
+        if (cachedData) {
+          const latency = (performance.now() - startTime).toFixed(2);
+          console.log(`[Redis] Cache HIT for ${endpoint} on attempt ${attempt} - Response Time: ${latency}ms`);
+          return cachedData;
+        }
+
+        if (attempt === 1) {
+            const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
+            console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
+        }
+
         const fetchStartTime = performance.now();
         const res = await fetch(`${CF_BASE}/${endpoint}`);
         const json = await res.json();
