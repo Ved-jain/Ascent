@@ -4,48 +4,70 @@ import { cacheGet, cacheSet } from './redis.js';
 // Codeforces API base URL
 const CF_BASE = 'https://codeforces.com/api';
 
+const pendingRequests = new Map();
+
 /**
  * Generic GET helper to fetch from Codeforces API and parse JSON response.
- * Implements Redis caching with a 5-minute TTL, fallback mechanism, and latency logging.
- * Throws an error if the CF response status is not "OK".
- * @param {string} endpoint - The API endpoint to hit (e.g. 'user.info?handles=handle')
+ * Implements request coalescing, Redis caching, and automatic retries for rate limits.
+ * @param {string} endpoint - The API endpoint to hit
  * @returns {Promise<any>} - The result payload from Codeforces
  */
-async function cfGet(endpoint) {
-  const cacheKey = `cf:${endpoint}`;
-  
-  // 1. Measure response time and try to get from Redis Cache first
-  const startTime = performance.now();
-  const cachedData = await cacheGet(cacheKey);
-
-  if (cachedData) {
-    // Cache HIT
-    const latency = (performance.now() - startTime).toFixed(2);
-    console.log(`[Redis] Cache HIT for ${endpoint} - Response Time: ${latency}ms`);
-    return cachedData;
+async function cfGet(endpoint, retries = 3) {
+  if (pendingRequests.has(endpoint)) {
+    return pendingRequests.get(endpoint);
   }
 
-  // Cache MISS
-  const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
-  console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
+  const promise = (async () => {
+    const cacheKey = `cf:${endpoint}`;
+    
+    // 1. Measure response time and try to get from Redis Cache first
+    const startTime = performance.now();
+    const cachedData = await cacheGet(cacheKey);
 
-  // 2. Fetch directly from Codeforces API
-  const fetchStartTime = performance.now();
-  const res = await fetch(`${CF_BASE}/${endpoint}`);
-  const json = await res.json();
-  const fetchLatency = (performance.now() - fetchStartTime).toFixed(2);
+    if (cachedData) {
+      const latency = (performance.now() - startTime).toFixed(2);
+      console.log(`[Redis] Cache HIT for ${endpoint} - Response Time: ${latency}ms`);
+      return cachedData;
+    }
 
-  if (json.status !== 'OK') {
-    throw new Error(json.comment || 'CF API error');
+    const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
+    console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
+
+    // 2. Fetch directly from Codeforces API with retries
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const fetchStartTime = performance.now();
+        const res = await fetch(`${CF_BASE}/${endpoint}`);
+        const json = await res.json();
+        const fetchLatency = (performance.now() - fetchStartTime).toFixed(2);
+
+        if (json.status !== 'OK') {
+          if (json.comment && json.comment.includes('Call limit exceeded') && attempt < retries) {
+            console.warn(`[CF API] Rate limit hit for ${endpoint}. Retrying in ${attempt * 1000}ms...`);
+            await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+            continue;
+          }
+          throw new Error(json.comment || 'CF API error');
+        }
+
+        // 3. Cache the successful API response (TTL 5 mins)
+        await cacheSet(cacheKey, json.result, 300);
+        console.log(`[Source] Fetched ${endpoint} from Codeforces API - Response Time: ${fetchLatency}ms.`);
+        return json.result;
+      } catch (error) {
+        if (attempt === retries) throw error;
+        console.warn(`[CF API] Request failed for ${endpoint}. Retrying in ${attempt * 1000}ms...`, error.message);
+        await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+      }
+    }
+  })();
+
+  pendingRequests.set(endpoint, promise);
+  try {
+    return await promise;
+  } finally {
+    pendingRequests.delete(endpoint);
   }
-
-  // 3. Cache the successful API response
-  // TTL is 5 minutes (300 seconds) as requested for user stats to keep data relatively fresh
-  await cacheSet(cacheKey, json.result, 300);
-
-  console.log(`[Source] Fetched ${endpoint} from Codeforces API - Response Time: ${fetchLatency}ms.`);
-
-  return json.result;
 }
 
 /**
