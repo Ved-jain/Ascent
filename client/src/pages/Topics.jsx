@@ -205,9 +205,11 @@ export default function Topics() {
                               <span className="badge badge-accent">{prob.rating}</span>
                             </div>
                             <h4 className="rec-name">{prob.name}</h4>
-                            <div className="tag-badge-container" style={{ margin: '8px 0 16px' }}>
+                            <div className="tag-badge-container" style={{ margin: '8px 0 16px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                               {prob.tags.slice(0, 3).map(tag => (
-                                <span key={tag} className="tag-badge">{tag}</span>
+                                <span key={tag} className="tag-badge" style={{ backgroundColor: 'var(--surface-3)', color: 'var(--text-2)', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                                  {tag}
+                                </span>
                               ))}
                             </div>
                           </div>
