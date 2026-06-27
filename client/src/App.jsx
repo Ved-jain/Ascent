@@ -14,6 +14,7 @@ import Upsolve from './pages/Upsolve.jsx';
 import SkillTree from './pages/SkillTree.jsx';
 import Insights from './pages/Insights.jsx';
 import ContestHub from './pages/ContestHub.jsx';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 /**
  * Application Entry router component.
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
