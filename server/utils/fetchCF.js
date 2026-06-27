@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { cacheGet, cacheSet } from './redis.js';
+import { cacheGet, cacheSet, cacheLock } from './redis.js';
 
 // Codeforces API base URL
 const CF_BASE = 'https://codeforces.com/api';
@@ -19,6 +19,7 @@ async function cfGet(endpoint, retries = 3) {
 
   const promise = (async () => {
     const cacheKey = `cf:${endpoint}`;
+    const lockKey = `lock:cf:${endpoint}`;
     
     // 1. Fetch directly from Codeforces API with retries, but check Redis first on every attempt
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -36,6 +37,23 @@ async function cfGet(endpoint, retries = 3) {
         if (attempt === 1) {
             const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
             console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
+        }
+
+        // Try to acquire distributed lock for this endpoint
+        const acquiredLock = await cacheLock(lockKey, 10);
+        if (!acquiredLock) {
+           console.log(`[Redis] Lock acquired by another instance for ${endpoint}. Waiting...`);
+           // Someone else is fetching. Wait and poll cache instead of hitting CF
+           for (let i = 0; i < 20; i++) {
+             await new Promise(resolve => setTimeout(resolve, 500));
+             const polledData = await cacheGet(cacheKey);
+             if (polledData) {
+               console.log(`[Redis] Cache populated by another instance for ${endpoint}!`);
+               return polledData;
+             }
+           }
+           // If we exhausted polling, continue to normal retry
+           throw new Error('Lock timeout');
         }
 
         const fetchStartTime = performance.now();

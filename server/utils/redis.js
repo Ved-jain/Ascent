@@ -55,4 +55,21 @@ export async function cacheSet(key, value, ttlSeconds) {
   }
 }
 
+/**
+ * Attempts to acquire a distributed lock.
+ * @param {string} key - The lock key
+ * @param {number} ttlSeconds - Lock expiration to prevent deadlocks
+ * @returns {Promise<boolean>} - True if lock was acquired, false otherwise
+ */
+export async function cacheLock(key, ttlSeconds) {
+  if (!redisClient) return true; // Proceed if Redis is disabled
+  try {
+    const result = await redisClient.set(key, 'locked', { nx: true, ex: ttlSeconds });
+    return result === 'OK';
+  } catch (err) {
+    console.warn(`[Redis] LOCK Error for key "${key}":`, err.message);
+    return true; // Fallback to allowing execution if lock fails
+  }
+}
+
 export default redisClient;
