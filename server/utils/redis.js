@@ -1,5 +1,7 @@
 import { Redis } from '@upstash/redis';
 
+export const DEFAULT_TTL_SECONDS = 300; // 5 minutes default TTL
+
 const redisClient = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
   ? new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL,
@@ -8,14 +10,14 @@ const redisClient = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_R
   : null;
 
 if (!redisClient) {
-  console.warn('[Redis] No UPSTASH_REDIS_REST_URL or TOKEN provided. Cache is disabled and will fallback to direct DB fetching.');
+  console.warn('[Redis] No UPSTASH_REDIS_REST_URL or TOKEN provided. Cache is disabled and will fallback to direct source fetching.');
 } else {
   console.log('[Redis] Configured to use Upstash REST API.');
 }
 
 /**
  * Safe GET method with fallback mechanism.
- * If Redis is down or an error occurs, it catches the error and returns null.
+ * If Redis is down or an error occurs, it catches the error, logs it, and returns null.
  * 
  * @param {string} key - The cache key
  * @returns {Promise<any|null>} - The parsed data, or null if missing/error
@@ -24,15 +26,14 @@ export async function cacheGet(key) {
   if (!redisClient) return null;
   try {
     const data = await redisClient.get(key);
-    if (data !== null) {
-      console.log(`[Redis] Cache HIT for key "${key}"`);
-    } else {
-      console.log(`[Redis] Cache MISS for key "${key}"`);
+    if (data !== null && data !== undefined) {
+      console.log(`[Cache Hit] Key: "${key}"`);
+      return data;
     }
-    // Upstash automatically parses JSON, so we just return it directly
-    return data || null;
+    console.log(`[Cache Miss] Key: "${key}"`);
+    return null;
   } catch (err) {
-    console.warn(`[Redis] GET Error for key "${key}" (Fallback Triggered):`, err.message);
+    console.warn(`[Redis Failure] Connection/GET error for key "${key}": ${err.message}. Fallback triggered.`);
     return null; // Fallback to fetching from source
   }
 }
@@ -43,31 +44,32 @@ export async function cacheGet(key) {
  * 
  * @param {string} key - The cache key
  * @param {any} value - The value to cache
- * @param {number} ttlSeconds - Time to live in seconds
+ * @param {number} [ttlSeconds=300] - Time to live in seconds
  */
-export async function cacheSet(key, value, ttlSeconds) {
+export async function cacheSet(key, value, ttlSeconds = DEFAULT_TTL_SECONDS) {
   if (!redisClient) return;
   try {
-    // Upstash handles serialization automatically and uses { ex: ttl } syntax
+    // Upstash handles JSON serialization automatically and uses { ex: ttl } syntax
     await redisClient.set(key, value, { ex: ttlSeconds });
   } catch (err) {
-    console.warn(`[Redis] SET Error for key "${key}":`, err.message);
+    console.warn(`[Redis Failure] Connection/SET error for key "${key}": ${err.message}. Cache write skipped.`);
   }
 }
 
 /**
- * Attempts to acquire a distributed lock.
+ * Distributed lock helper.
+ * Kept simple and non-blocking for backward compatibility.
  * @param {string} key - The lock key
  * @param {number} ttlSeconds - Lock expiration to prevent deadlocks
  * @returns {Promise<boolean>} - True if lock was acquired, false otherwise
  */
-export async function cacheLock(key, ttlSeconds) {
+export async function cacheLock(key, ttlSeconds = 10) {
   if (!redisClient) return true; // Proceed if Redis is disabled
   try {
     const result = await redisClient.set(key, 'locked', { nx: true, ex: ttlSeconds });
     return result === 'OK';
   } catch (err) {
-    console.warn(`[Redis] LOCK Error for key "${key}":`, err.message);
+    console.warn(`[Redis] LOCK Error for key "${key}": ${err.message}`);
     return true; // Fallback to allowing execution if lock fails
   }
 }

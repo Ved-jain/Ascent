@@ -8,75 +8,77 @@ const pendingRequests = new Map();
 
 /**
  * Generic GET helper to fetch from Codeforces API and parse JSON response.
- * Implements request coalescing, Redis caching, and automatic retries for rate limits.
- * @param {string} endpoint - The API endpoint to hit
+ * Implements the Cache-Aside pattern with Redis, in-memory request coalescing,
+ * and automatic retries for API rate limits.
+ * 
+ * @param {string} endpoint - The API endpoint to hit (e.g. "user.info?handles=tourist")
+ * @param {number} [retries=3] - Maximum retry attempts against Codeforces API
  * @returns {Promise<any>} - The result payload from Codeforces
  */
 async function cfGet(endpoint, retries = 3) {
+  const cacheKey = `cf:${endpoint}`;
+
+  // 1. Check Redis Cache first (Cache-Aside pattern: cache lookup)
+  const cacheStartTime = performance.now();
+  let cachedData = null;
+  try {
+    cachedData = await cacheGet(cacheKey);
+  } catch (err) {
+    console.warn(`[Redis Failure] Cache access failed for "${cacheKey}": ${err.message}. Proceeding to source fetch.`);
+    cachedData = null;
+  }
+
+  if (cachedData !== null && cachedData !== undefined) {
+    const cacheLatency = (performance.now() - cacheStartTime).toFixed(2);
+    console.log(`[API Response Duration] Endpoint: "${endpoint}" | Cache: HIT | Duration: ${cacheLatency}ms`);
+    return cachedData;
+  }
+
+  const lookupLatency = (performance.now() - cacheStartTime).toFixed(2);
+  console.log(`[Cache Miss] Key: "${cacheKey}" | Lookup: ${lookupLatency}ms. Fetching from Codeforces API...`);
+
+  // 2. Request coalescing: If this exact endpoint is already currently in-flight,
+  // share the active promise instead of firing duplicate outgoing requests.
   if (pendingRequests.has(endpoint)) {
     return pendingRequests.get(endpoint);
   }
 
   const promise = (async () => {
-    const cacheKey = `cf:${endpoint}`;
-    const lockKey = `lock:cf:${endpoint}`;
-    
-    // 1. Fetch directly from Codeforces API with retries, but check Redis first on every attempt
+    // 3. Fetch directly from Codeforces API with retries
     for (let attempt = 1; attempt <= retries; attempt++) {
+      const fetchStartTime = performance.now();
       try {
-        // Measure response time and try to get from Redis Cache first
-        const startTime = performance.now();
-        const cachedData = await cacheGet(cacheKey);
-
-        if (cachedData) {
-          const latency = (performance.now() - startTime).toFixed(2);
-          console.log(`[Redis] Cache HIT for ${endpoint} on attempt ${attempt} - Response Time: ${latency}ms`);
-          return cachedData;
-        }
-
-        if (attempt === 1) {
-            const cacheLookupLatency = (performance.now() - startTime).toFixed(2);
-            console.log(`[Redis] Cache MISS for ${endpoint} - Lookup took ${cacheLookupLatency}ms. Fetching from source...`);
-        }
-
-        // Try to acquire distributed lock for this endpoint
-        const acquiredLock = await cacheLock(lockKey, 10);
-        if (!acquiredLock) {
-           console.log(`[Redis] Lock acquired by another instance for ${endpoint}. Waiting...`);
-           // Someone else is fetching. Wait and poll cache instead of hitting CF
-           for (let i = 0; i < 20; i++) {
-             await new Promise(resolve => setTimeout(resolve, 500));
-             const polledData = await cacheGet(cacheKey);
-             if (polledData) {
-               console.log(`[Redis] Cache populated by another instance for ${endpoint}!`);
-               return polledData;
-             }
-           }
-           // If we exhausted polling, continue to normal retry
-           throw new Error('Lock timeout');
-        }
-
-        const fetchStartTime = performance.now();
         const res = await fetch(`${CF_BASE}/${endpoint}`);
-        const json = await res.json();
         const fetchLatency = (performance.now() - fetchStartTime).toFixed(2);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const json = await res.json();
 
         if (json.status !== 'OK') {
           if (json.comment && json.comment.includes('Call limit exceeded') && attempt < retries) {
-            console.warn(`[CF API] Rate limit hit for ${endpoint}. Retrying in ${attempt * 1000}ms...`);
+            console.warn(`[External API Warning] Rate limit hit for ${endpoint}. Retrying in ${attempt * 1000}ms...`);
             await new Promise(resolve => setTimeout(resolve, attempt * 1000));
             continue;
           }
-          throw new Error(json.comment || 'CF API error');
+          // Non-retryable API error (e.g. "handles: User not found")
+          const apiError = new Error(json.comment || 'CF API error');
+          apiError.isNonRetryable = true;
+          throw apiError;
         }
 
-        // 3. Cache the successful API response (TTL 5 mins)
+        // 4. Cache the successful API response in Redis (Cache-Aside: populate cache on miss)
+        // Default TTL: 300 seconds (5 minutes)
         await cacheSet(cacheKey, json.result, 300);
-        console.log(`[Source] Fetched ${endpoint} from Codeforces API - Response Time: ${fetchLatency}ms.`);
+        console.log(`[API Response Duration] Endpoint: "${endpoint}" | Cache: MISS | Duration: ${fetchLatency}ms (Saved to Redis TTL 300s)`);
+
         return json.result;
       } catch (error) {
-        if (attempt === retries) throw error;
-        console.warn(`[CF API] Request failed for ${endpoint}. Retrying in ${attempt * 1000}ms...`, error.message);
+        const failedDuration = (performance.now() - fetchStartTime).toFixed(2);
+        console.error(`[External API Failure] Request to "${endpoint}" failed on attempt ${attempt}/${retries} (${failedDuration}ms): ${error.message}`);
+        if (attempt === retries || error.isNonRetryable) throw error;
         await new Promise(resolve => setTimeout(resolve, attempt * 1000));
       }
     }
